@@ -30,6 +30,7 @@
     }
     img {
         width: 18px;
+        flex-shrink: 0;
         cursor: pointer;
         &.close {
             width: 15px;

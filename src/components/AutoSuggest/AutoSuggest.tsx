@@ -8,6 +8,7 @@ import Fuse, { FuseResult } from 'fuse.js'
 function AutoSuggest(props: { children: any, query: string, options: SuggestionConfig }) {
     const searchBoxRef: any = useRef(null);
     const [searchBoxHeight, setSearchBoxHeight] = useState<string>('0px');
+    const [searchBoxLeftOffset, setSearchBoxLeftOffset] = useState<number>(0);
 
     const [suggestions, setSuggestions] = useState<Array<Suggestion>>([]);
     const [collections, setCollections] = useState<Array<Suggestion>>([]);
@@ -15,7 +16,11 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
 
     // Position the suggestion box directly below the search box
     useEffect(() => {
-        if (searchBoxRef.current) setSearchBoxHeight((searchBoxRef.current.offsetHeight + 10) + 'px');
+        if (searchBoxRef.current) {
+            setSearchBoxHeight((searchBoxRef.current.offsetHeight + 10) + 'px');
+            const rect = searchBoxRef.current.getBoundingClientRect();
+            setSearchBoxLeftOffset(rect.left);
+        }
     }, []);
 
     // Listen for the query changes
@@ -24,15 +29,15 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
         setProducts([]);
         setSuggestions([]);
 
-        if(props.query.length >= props.options.minChar) loadResult();
+        if (props.query.length >= props.options.minChar) loadResult();
     }, [props.query]);
 
     // Function to load results
     const loadResult = async () => {
         axios.get('/api/data.json').then((res: any) => {
-            if(props.options.showSuggestion) setSuggestions(filterResult(res.data.suggestion, 'suggestion'));
-            if(props.options.showCollection) setCollections(filterResult(res.data.collection, 'collection'));
-            if(props.options.showProducts) setProducts(filterResult(res.data.product, 'product'));
+            if (props.options.showSuggestion) setSuggestions(filterResult(res.data.suggestion, 'suggestion'));
+            if (props.options.showCollection) setCollections(filterResult(res.data.collection, 'collection'));
+            if (props.options.showProducts) setProducts(filterResult(res.data.product, 'product'));
         });
     }
 
@@ -46,7 +51,7 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
             case 'collection':
                 keys = ['title']
                 break;
-            case 'suggestion':
+            case 'product':
                 keys = ['title', 'brand']
                 break;
             default:
@@ -54,7 +59,7 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
                 break;
         }
 
-        const options = { keys: keys };
+        const options = { keys: keys, threshold: 0.5, };
         const fuse = new Fuse(data, options);
         const rawResult: Array<FuseResult<Suggestion>> = fuse.search(props.query);
         return rawResult.map((item: any) => item.item).slice(0, 3);
@@ -67,7 +72,8 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
                 {props.children}
             </div>
             {/* Suggestion Box */}
-            <section className={`suggestion-box ${props.query ? 'show-box' : 'hide-box'}`} style={{ marginTop: searchBoxHeight }}>
+            <section className={`suggestion-box ${searchBoxLeftOffset > 100 ? 'full-box' : ''} ${props.query ? 'show-box' : ''}`} style={{ marginTop: searchBoxHeight }}>
+                {/* Suggestion Term section */}
                 {props.options.showSuggestion && (
                     <div className='list'>
                         <h2>SUGGESTIONS</h2>
@@ -81,6 +87,7 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
                         )}
                     </div>
                 )}
+                {/* Collection section */}
                 {props.options.showCollection && (
                     <div className='list'>
                         <h2>COLLECTIONS</h2>
@@ -94,6 +101,7 @@ function AutoSuggest(props: { children: any, query: string, options: SuggestionC
                         )}
                     </div>
                 )}
+                {/* Products section */}
                 {props.options.showProducts && (
                     <div className='list'>
                         <h2>PRODUCTS</h2>

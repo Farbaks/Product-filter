@@ -9,7 +9,7 @@ function Header() {
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     const options: SuggestionConfig = {
-        showCollection: false,
+        showCollection: true,
         showProducts: true,
         showSuggestion: true,
         minChar: 3

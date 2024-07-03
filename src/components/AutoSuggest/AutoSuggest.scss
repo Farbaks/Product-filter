@@ -3,31 +3,33 @@
     display: flex;
     flex-flow: column;
     align-items: flex-end;
-
     .search-con {
         width: 100%;
     }
 
     .suggestion-box {
-        width: 350px;
-        // min-height: 450px;
+        width: 100%;
         position: absolute;
-        z-index: 2;
+        z-index: 100;
         top: 0;
         box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
         background: #FFF;
+        display: none;
 
         @media screen and (max-width: 675px) {
             width: 100%;
             right: 0;
         }
+         
+        &.full-box {
+            width: 350px;
+            @media screen and (max-width: 675px) {
+                width: 100%;
+            }
+        }
 
         &.show-box {
             display: block;
-        }
-
-        &.hide-box {
-            display: none;
         }
 
         &:after {
@@ -135,7 +137,7 @@
                 width: 100%;
                 font-size: 13px;
                 font-weight: 500;
-                padding: 3px 10px;
+                padding: 6px 10px;
                 color: var(--text-color-3);
                 text-align: center;
                 font-style: italic;
