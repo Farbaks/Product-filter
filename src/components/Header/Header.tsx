@@ -2,8 +2,12 @@
 import './Header.scss';
 import logo from '../../assets/images/logo.svg';
 import SearchBox from '../SearchBox/SearchBox';
+import AutoSuggest from '../AutoSuggest/AutoSuggest';
+import { useState } from 'react';
 
 function Header() {
+    const [searchQuery, setSearchQuery] = useState("");
+
     return (
         <header>
             <div className='logo'>
@@ -20,9 +24,12 @@ function Header() {
                 <a>Shoes</a>
             </nav>
 
-            <SearchBox />
+            <AutoSuggest query={searchQuery}>
+                <SearchBox query={searchQuery} queryChange={(val: string) => setSearchQuery(val)} />
+            </AutoSuggest>
+
         </header>
     );
-  }
-  
+}
+
 export default Header;

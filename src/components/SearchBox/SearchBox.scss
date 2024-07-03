@@ -8,6 +8,15 @@
     &.open {
         width: 230px;
         border: solid 2px rgb(230,230,230);
+        @media screen and (max-width: 675px) {
+            width: 150px;
+        }
+        @media screen and (max-width: 540px) {
+            width: 100%;
+        }
+        input {
+            width: 100%;
+        }
     }
     &.close {
         width: 20px;

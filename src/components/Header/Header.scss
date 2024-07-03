@@ -9,8 +9,29 @@ header {
     align-items: center;
     justify-content: space-between;
     padding: 10px 80px;
+    @media screen and (max-width: 1140px) {
+        padding: 10px 40px;
+    }
+    @media screen and (max-width: 675px) {
+        padding: 10px 20px;
+    }
+    @media screen and (max-width: 540px) {
+        flex-flow: column;
+        align-items: stretch;
+        height: 80px;
+    }
     .logo {
         width: 230px;
+        flex-shrink: 0;
+        @media screen and (max-width: 1200px) {
+            width: 180px;
+        }
+        @media screen and (max-width: 675px) {
+            margin-right: 10px;
+        }
+        @media screen and (max-width: 540px) {
+            margin-bottom: 10px;
+        }
         img {
             width: 100%;
         }
@@ -22,13 +43,22 @@ header {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+        @media screen and (max-width: 1140px) {
+            display: none;
+        }
         a {
             font-size: 14px;
             font-weight: 500;
             color: var(--text-color-1);
             cursor: pointer;
+            @media screen and (max-width: 1200px) {
+                font-size: 12px;
+            }
             &:not(:last-of-type) {
                 margin-right: 20px;
+                @media screen and (max-width: 1200px) {
+                    margin-right: 15px;
+                }
             }
             &:hover {
                 text-decoration: underline;
