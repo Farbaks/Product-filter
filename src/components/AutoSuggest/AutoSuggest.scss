@@ -49,15 +49,16 @@
             ul {
                 padding-left: 0;
 
-                li {
+                a {
                     width: 100%;
+                    display: block;
                     list-style-type: none;
                     padding: 3px 10px;
+                    text-decoration: none;
                     font-size: 13px;
                     font-weight: 500;
                     color: var(--text-color-1);
                     cursor: pointer;
-
                     &:hover {
                         background: rgb(230, 230, 230);
                     }
@@ -74,6 +75,7 @@
                     padding: 10px;
                     cursor: pointer;
                     border-bottom: solid 1px rgb(230, 230, 230);
+                    text-decoration: none;
 
                     &:hover {
                         background: rgb(230, 230, 230);

@@ -5,9 +5,10 @@ import close from '../../assets/images/close.svg'
 import { useState } from 'react';
 
 function SearchBox({ query, queryChange }: { query: string, queryChange: (val: string) => void }) {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const toggleBox = (value: boolean): void => {
+        queryChange("");
         setIsOpen(() => value);
     };
 
