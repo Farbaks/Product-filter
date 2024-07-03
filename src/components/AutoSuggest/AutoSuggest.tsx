@@ -139,6 +139,7 @@ function ProductItem({ product }: { product: Suggestion }) {
 }
 
 type Suggestion = {
+    id?: string,
     term?: string,
     url: string,
     title?: string,
