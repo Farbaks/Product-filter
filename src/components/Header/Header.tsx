@@ -2,11 +2,18 @@
 import './Header.scss';
 import logo from '../../assets/images/logo.svg';
 import SearchBox from '../SearchBox/SearchBox';
-import AutoSuggest from '../AutoSuggest/AutoSuggest';
+import AutoSuggest, { SuggestionConfig } from '../AutoSuggest/AutoSuggest';
 import { useState } from 'react';
 
 function Header() {
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
+    const options: SuggestionConfig = {
+        showCollection: false,
+        showProducts: true,
+        showSuggestion: true,
+        minChar: 3
+    }
 
     return (
         <header>
@@ -24,7 +31,7 @@ function Header() {
                 <a>Shoes</a>
             </nav>
 
-            <AutoSuggest query={searchQuery}>
+            <AutoSuggest query={searchQuery} options={options}>
                 <SearchBox query={searchQuery} queryChange={(val: string) => setSearchQuery(val)} />
             </AutoSuggest>
 

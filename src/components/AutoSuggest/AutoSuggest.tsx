@@ -5,7 +5,7 @@ import axios from 'axios';
 import Fuse, { FuseResult } from 'fuse.js'
 
 
-function AutoSuggest(props: { children: any, query: string }) {
+function AutoSuggest(props: { children: any, query: string, options: SuggestionConfig }) {
     const searchBoxRef: any = useRef(null);
     const [searchBoxHeight, setSearchBoxHeight] = useState<string>('0px');
 
@@ -20,17 +20,19 @@ function AutoSuggest(props: { children: any, query: string }) {
 
     // Listen for the query changes
     useEffect(() => {
-        loadResult();
+        setCollections([]);
+        setProducts([]);
+        setSuggestions([]);
+
+        if(props.query.length >= props.options.minChar) loadResult();
     }, [props.query]);
 
     // Function to load results
     const loadResult = async () => {
         axios.get('/api/data.json').then((res: any) => {
-            setSuggestions(filterResult(res.data.suggestion, 'suggestion'));
-            setCollections(filterResult(res.data.collection, 'collection'));
-            setProducts(filterResult(res.data.product, 'product'));
-        }).catch((error) => {
-
+            if(props.options.showSuggestion) setSuggestions(filterResult(res.data.suggestion, 'suggestion'));
+            if(props.options.showCollection) setCollections(filterResult(res.data.collection, 'collection'));
+            if(props.options.showProducts) setProducts(filterResult(res.data.product, 'product'));
         });
     }
 
@@ -52,8 +54,8 @@ function AutoSuggest(props: { children: any, query: string }) {
                 break;
         }
 
-        const options = { keys: keys }
-        const fuse = new Fuse(data, options)
+        const options = { keys: keys };
+        const fuse = new Fuse(data, options);
         const rawResult: Array<FuseResult<Suggestion>> = fuse.search(props.query);
         return rawResult.map((item: any) => item.item).slice(0, 3);
     }
@@ -65,33 +67,49 @@ function AutoSuggest(props: { children: any, query: string }) {
                 {props.children}
             </div>
             {/* Suggestion Box */}
-            <section className='suggestion-box' style={{ marginTop: searchBoxHeight }}>
-                <div className='list'>
-                    <h2>SUGGESTIONS</h2>
-                    <ul>
-                        {suggestions.map((item: Suggestion, index: number) => (
-                            <a key={index} href={item.url}>{item.term}</a>
-                        ))}
-                    </ul>
-                </div>
-                <div className='list'>
-                    <h2>COLLECTIONS</h2>
-                    <ul>
-                        {collections.map((item: Suggestion, index: number) => (
-                            <a key={index} href={item.url}>{item.title}</a>
-                        ))}
-                    </ul>
-                </div>
-                <div className='list'>
-                    <h2>PRODUCTS</h2>
-                    <div className='product-list'>
-                        {products.map((item: Suggestion, index: number) => (
-                            <ProductItem key={index} product={item} />
-                        ))}
-
+            <section className={`suggestion-box ${props.query ? 'show-box' : 'hide-box'}`} style={{ marginTop: searchBoxHeight }}>
+                {props.options.showSuggestion && (
+                    <div className='list'>
+                        <h2>SUGGESTIONS</h2>
+                        <ul>
+                            {suggestions.map((item: Suggestion, index: number) => (
+                                <a key={index} href={item.url}>{item.term}</a>
+                            ))}
+                        </ul>
+                        {suggestions.length == 0 && (
+                            <p className='no-result'>No suggestions found...</p>
+                        )}
                     </div>
-                </div>
-                <p className='action'>VIEW ALL PRODUCTS</p>
+                )}
+                {props.options.showCollection && (
+                    <div className='list'>
+                        <h2>COLLECTIONS</h2>
+                        <ul>
+                            {collections.map((item: Suggestion, index: number) => (
+                                <a key={index} href={item.url}>{item.title}</a>
+                            ))}
+                        </ul>
+                        {collections.length == 0 && (
+                            <p className='no-result'>No collections found...</p>
+                        )}
+                    </div>
+                )}
+                {props.options.showProducts && (
+                    <div className='list'>
+                        <h2>PRODUCTS</h2>
+                        <div className='product-list'>
+                            {products.map((item: Suggestion, index: number) => (
+                                <ProductItem key={index} product={item} />
+                            ))}
+                        </div>
+                        {products.length == 0 && (
+                            <p className='no-result'>No products found...</p>
+                        )}
+                    </div>
+                )}
+                {products.length > 0 && (
+                    <p className='action'>VIEW ALL PRODUCTS</p>
+                )}
             </section>
         </div>
     );
@@ -119,6 +137,13 @@ type Suggestion = {
     brand?: string,
     image?: string,
     price?: string
+}
+
+export type SuggestionConfig = {
+    showSuggestion: boolean,
+    showCollection: boolean,
+    showProducts: boolean,
+    minChar: number
 }
 
 export default AutoSuggest;

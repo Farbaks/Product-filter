@@ -10,7 +10,7 @@
 
     .suggestion-box {
         width: 350px;
-        min-height: 450px;
+        // min-height: 450px;
         position: absolute;
         z-index: 2;
         top: 0;
@@ -20,6 +20,14 @@
         @media screen and (max-width: 675px) {
             width: 100%;
             right: 0;
+        }
+
+        &.show-box {
+            display: block;
+        }
+
+        &.hide-box {
+            display: none;
         }
 
         &:after {
@@ -59,6 +67,7 @@
                     font-weight: 500;
                     color: var(--text-color-1);
                     cursor: pointer;
+
                     &:hover {
                         background: rgb(230, 230, 230);
                     }
@@ -120,6 +129,16 @@
                         }
                     }
                 }
+            }
+
+            .no-result {
+                width: 100%;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 3px 10px;
+                color: var(--text-color-3);
+                text-align: center;
+                font-style: italic;
             }
         }
 
